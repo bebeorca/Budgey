@@ -20,53 +20,56 @@ class ReportCard extends StatelessWidget {
       DateTime.parse(this.date),
     );
 
-    return Container(
-      padding: const EdgeInsets.all(12),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: CardModel.getColor(type),
-              borderRadius: BorderRadius.circular(100),
+    return Card(
+      color: Colors.white,
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: CardModel.getColor(type),
+                borderRadius: BorderRadius.circular(100),
+              ),
+              child: Icon(
+                CardModel.getIconForType(type),
+                size: 35,
+                color: Colors.white,
+              ),
             ),
-            child: Icon(
-              CardModel.getIconForType(type),
-              size: 35,
-              color: Colors.white,
+            Column(
+              children: [
+                Text(
+                  description,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                Text(
+                  date,
+                  style: const TextStyle(
+                    color: Color.fromARGB(255, 119, 119, 119),
+                  ),
+                ),
+              ],
             ),
-          ),
-          Column(
-            children: [
-              Text(
-                description,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w500,
+            Column(
+              children: [
+                Text(
+                  CurrencyConverter.toIDR(
+                    amount,
+                    2,
+                  ),
+                  style:
+                      const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
                 ),
-              ),
-              Text(
-                date,
-                style: const TextStyle(
-                  color: Color.fromARGB(255, 119, 119, 119),
-                ),
-              ),
-            ],
-          ),
-          Column(
-            children: [
-              Text(
-                CurrencyConverter.toIDR(
-                  amount,
-                  2,
-                ),
-                style:
-                    const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-              ),
-            ],
-          ),
-        ],
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

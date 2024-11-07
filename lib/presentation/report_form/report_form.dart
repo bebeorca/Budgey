@@ -107,7 +107,13 @@ class _ReportFormState extends State<ReportForm> {
                     amountController.text = '';
                     descriptionController.text = '';
                   },
-                  child: const Text("Add"),
+                  child: const Text(
+                    "Add",
+                    style: TextStyle(
+                      fontSize: 17,
+                      color: Colors.white
+                    ),
+                  ),
                 ),
               ],
             ),

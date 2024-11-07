@@ -117,13 +117,11 @@ class _ReportsScreenState extends State<ReportsScreen> {
                               color: Colors.white,
                             ),
                           ),
-                          child: Card(
-                            child: ReportCard(
-                              type: reports[index]["type"],
-                              amount: reports[index]["amount"],
-                              description: reports[index]["description"],
-                              date: reports[index]["date"],
-                            ),
+                          child: ReportCard(
+                            type: reports[index]["type"],
+                            amount: reports[index]["amount"],
+                            description: reports[index]["description"],
+                            date: reports[index]["date"],
                           ),
                         );
                       },

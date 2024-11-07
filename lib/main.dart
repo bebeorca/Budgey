@@ -13,8 +13,19 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Budgey',
       theme: ThemeData(
+        floatingActionButtonTheme: const FloatingActionButtonThemeData(
+          backgroundColor: Color.fromARGB(255, 0, 49, 97),
+          foregroundColor: Colors.white,
+          iconSize: 28,
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color.fromARGB(255, 0, 49, 97),
+          ),
+        ),
+        
+        scaffoldBackgroundColor: const Color.fromARGB(255, 252, 250, 238),
         textTheme: GoogleFonts.rubikTextTheme(),
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
       home: const ReportsScreen(),
