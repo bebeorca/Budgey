@@ -1,4 +1,5 @@
 import 'package:budgey/domain/report_type.dart';
+import 'package:budgey/presentation/components/Card/card_model.dart';
 import 'package:budgey/presentation/report_form/controller.dart';
 import 'package:flutter/material.dart';
 
@@ -60,27 +61,47 @@ class _ReportFormState extends State<ReportForm> {
                         ),
                       ),
                     ),
-                    DropdownButton<Map<String, dynamic>>(
-                      hint: const Text("Select Spending Type"),
-                      value: selectedType,
-                      isExpanded: true,
-                      onChanged: (newValue) {
-                        setState(() {
-                          selectedType = newValue;
-                        });
-                      },
-                      items: ReportType.spendingTypes.map((e) {
-                        return DropdownMenuItem<Map<String, dynamic>>(
-                          value: e,
-                          child: Row(
-                            children: [
-                              Icon(e['icon'], color: Colors.blue),
-                              const SizedBox(width: 8),
-                              Text(e['text']),
-                            ],
-                          ),
-                        );
-                      }).toList(),
+                    const SizedBox(height: 10),
+                    DropdownButtonHideUnderline(
+                      child: DropdownButton<Map<String, dynamic>>(
+                        value: selectedType,
+                        isExpanded: true,
+                        onChanged: (newValue) {
+                          setState(() {
+                            selectedType = newValue!;
+                          });
+                        },
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        items: ReportType.spendingTypes.map((e) {
+                          return DropdownMenuItem<Map<String, dynamic>>(
+                            value: e,
+                            child: Row(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    color: CardModel.getColor(
+                                      e['text'],
+                                    ),
+                                    borderRadius: BorderRadius.circular(100),
+                                  ),
+                                  child: Icon(
+                                    CardModel.getIconForType(
+                                      e['text'],
+                                    ),
+                                    size: 25,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 8,
+                                ),
+                                Text(e['text']),
+                              ],
+                            ),
+                          );
+                        }).toList(),
+                      ),
                     ),
                     const SizedBox(height: 10),
                     TextFormField(
@@ -109,10 +130,7 @@ class _ReportFormState extends State<ReportForm> {
                   },
                   child: const Text(
                     "Add",
-                    style: TextStyle(
-                      fontSize: 17,
-                      color: Colors.white
-                    ),
+                    style: TextStyle(fontSize: 17, color: Colors.white),
                   ),
                 ),
               ],
