@@ -1,3 +1,4 @@
+import 'package:budgey/controller/currency_converter.dart';
 import 'package:budgey/domain/report_type.dart';
 import 'package:budgey/presentation/components/Card/card_model.dart';
 import 'package:budgey/presentation/report_form/controller.dart';
@@ -13,8 +14,13 @@ class ReportForm extends StatefulWidget {
 class _ReportFormState extends State<ReportForm> {
   final TextEditingController amountController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
+  Map<String, dynamic> selectedType = {};
 
-  Map<String, dynamic>? selectedType;
+  @override
+  void initState() {
+    selectedType = ReportType.spendingTypes.first;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -105,6 +111,9 @@ class _ReportFormState extends State<ReportForm> {
                     ),
                     const SizedBox(height: 10),
                     TextFormField(
+                      inputFormatters: [
+                        CurrencyConverter(),
+                      ],
                       keyboardType: TextInputType.number,
                       controller: amountController,
                       decoration: const InputDecoration(
@@ -122,14 +131,14 @@ class _ReportFormState extends State<ReportForm> {
                     await ReportFormController.insert(
                       amountController,
                       descriptionController,
-                      selectedType?['text'],
+                      selectedType['text'],
                       context,
                     );
                     amountController.text = '';
                     descriptionController.text = '';
                   },
                   child: const Text(
-                    "Add",
+                    "Save",
                     style: TextStyle(fontSize: 17, color: Colors.white),
                   ),
                 ),

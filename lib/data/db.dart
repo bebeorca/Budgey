@@ -47,4 +47,13 @@ class Database {
     final db = await Database.db();
     return db.query('Reports', orderBy: "id DESC");
   }
+
+  static Future<List<Map<String, dynamic>>> getSpents(String type) async {
+    final db = await Database.db();
+    return db.query(
+      'Reports',
+      where: 'type = ?',
+      whereArgs: [type],
+    );
+  }
 }
