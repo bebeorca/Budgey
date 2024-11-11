@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:budgey/domain/report.dart';
 import 'package:sqflite/sqflite.dart' as sql;
 
@@ -56,5 +58,32 @@ class Database {
       whereArgs: [type],
       orderBy: "id DESC",
     );
+  }
+
+  static Future<List<Map<String, dynamic>>> getReportByID(int id) async {
+    final db = await Database.db();
+    return db.query(
+      'Reports',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
+  static Future<int> update(int id, String description, double amount, String type) async {
+    final db = await Database.db();
+
+    final data = {
+      'description': description,
+      'amount': amount,
+      'type': type,
+    };
+    var result;
+    try {
+      result =
+          await db.update('Reports', data, where: "id = ?", whereArgs: [id]);
+    } catch (e) {
+      print("AOWK ERROR $e");
+    }
+    return result;
   }
 }

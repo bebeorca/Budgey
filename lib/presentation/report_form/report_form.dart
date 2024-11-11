@@ -1,4 +1,5 @@
 import 'package:budgey/controller/currency_converter.dart';
+import 'package:budgey/data/db.dart';
 import 'package:budgey/domain/report_type.dart';
 import 'package:budgey/presentation/components/Card/card_model.dart';
 import 'package:budgey/presentation/report_form/controller.dart';
@@ -8,8 +9,10 @@ class ReportForm extends StatefulWidget {
   const ReportForm({
     super.key,
     required this.typeOfSpent,
+    required this.id,
   });
   final String typeOfSpent;
+  final int id;
 
   @override
   State<ReportForm> createState() => _ReportFormState();
@@ -18,7 +21,18 @@ class ReportForm extends StatefulWidget {
 class _ReportFormState extends State<ReportForm> {
   final TextEditingController amountController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
+  List<Map<String, dynamic>> report = [];
   Map<String, dynamic> selectedType = {};
+
+  void getReport() async {
+    widget.id != 0 ? report = await Database.getReportByID(widget.id) : null;
+    setState(() {
+      if (report.isNotEmpty) {
+        amountController.text = CurrencyConverter.toIDR(report[0]['amount'], 0);
+        descriptionController.text = report[0]['description'];
+      }
+    });
+  }
 
   @override
   void initState() {
@@ -26,6 +40,7 @@ class _ReportFormState extends State<ReportForm> {
         ? ReportType.spendingTypes
             .firstWhere((e) => e['text'] == widget.typeOfSpent)
         : ReportType.spendingTypes.first;
+    getReport();
     super.initState();
   }
 
@@ -39,16 +54,18 @@ class _ReportFormState extends State<ReportForm> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: widget.typeOfSpent != ''
-              ? Text("Add new report, ${widget.typeOfSpent}")
-              : const Text("Add new report"),
+          title: report.isNotEmpty
+              ? const Text("Edit report")
+              : widget.typeOfSpent != ''
+                  ? Text("Add new ${widget.typeOfSpent} report")
+                  : const Text("Add new report"),
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios),
             onPressed: () {
               Navigator.pop(
                 context,
                 true,
-              ); // Pass true to indicate data was added
+              );
             },
           ),
         ),
@@ -77,8 +94,7 @@ class _ReportFormState extends State<ReportForm> {
                       ),
                     ),
                     const SizedBox(height: 10),
-                    widget.typeOfSpent == ''
-                        ? DropdownButtonHideUnderline(
+                    report.isNotEmpty || widget.typeOfSpent == ''? DropdownButtonHideUnderline(
                             child: DropdownButton<Map<String, dynamic>>(
                               value: selectedType,
                               isExpanded: true,
@@ -163,18 +179,38 @@ class _ReportFormState extends State<ReportForm> {
                 ),
                 ElevatedButton(
                   onPressed: () async {
-                    await ReportFormController.insert(
-                      amountController,
-                      descriptionController,
-                      selectedType['text'],
-                      context,
-                    );
+                    final replacedAmount =
+                        amountController.text.replaceAll(RegExp(r'[Rp.]'), '');
+                    final parsedAmount = double.parse(replacedAmount);
+                    if (report.isNotEmpty) {
+                      await ReportFormController.update(
+                        widget.id,
+                        descriptionController.text,
+                        parsedAmount,
+                        selectedType['text'],
+                        "Data updated!",
+                        context,
+                      );
+                      Future.delayed(const Duration(seconds: 1))
+                          .then((onValue) {
+                        // ignore: use_build_context_synchronously
+                        Navigator.pop(context, true);
+                      });
+                    } else {
+                      await ReportFormController.insert(
+                        descriptionController.text,
+                        parsedAmount,
+                        selectedType['text'],
+                        "New data added!",
+                        context,
+                      );
+                    }
                     amountController.text = '';
                     descriptionController.text = '';
                   },
-                  child: const Text(
-                    "Save",
-                    style: TextStyle(fontSize: 17, color: Colors.white),
+                  child: Text(
+                    report.isNotEmpty ? "Update" : "Save",
+                    style: const TextStyle(fontSize: 17, color: Colors.white),
                   ),
                 ),
               ],

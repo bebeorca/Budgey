@@ -74,10 +74,12 @@ class _ReportsScreenState extends State<ReportsScreen> {
                         (report) => report['type'] == type,
                       );
                       return ReportCard(
+                        id: filteredReport['id'],
                         amount: ReportController.eachItemSpent(reports, type),
                         description: filteredReport['description'],
                         date: filteredReport['date'],
                         type: filteredReport['type'],
+                        isReport: true,
                         getReports: getReports,
                       );
                     },
@@ -90,6 +92,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
             MaterialPageRoute(
               builder: (context) => const ReportForm(
                 typeOfSpent: '',
+                id: 0,
               ),
             ),
           );

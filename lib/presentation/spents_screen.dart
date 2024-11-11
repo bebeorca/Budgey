@@ -1,7 +1,6 @@
 import 'package:budgey/controller/report_controller.dart';
 import 'package:budgey/data/db.dart';
 import 'package:budgey/presentation/components/Card/report_card.dart';
-import 'package:budgey/presentation/components/Card/spent_card.dart';
 import 'package:budgey/presentation/report_form/report_form.dart';
 import 'package:flutter/material.dart';
 
@@ -20,7 +19,6 @@ class SpentsScreen extends StatefulWidget {
 
 class _SpentsScreenState extends State<SpentsScreen> {
   List<Map<String, dynamic>> reports = [];
-  String typeOfSpent = '';
 
   void getReports() async {
     final report = await Database.getSpents(widget.type);
@@ -45,7 +43,7 @@ class _SpentsScreenState extends State<SpentsScreen> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Reports'),
+          title: Text(widget.type),
           actions: [
             // Display total amount spent on the app bar
             Padding(
@@ -71,8 +69,6 @@ class _SpentsScreenState extends State<SpentsScreen> {
                             await Database.delete(reports[index]["id"]);
                             setState(() {
                               getReports();
-                              typeOfSpent = reports[index]['type'];
-                              // totalSpent();
                             });
                           },
                           background: Container(
@@ -84,12 +80,14 @@ class _SpentsScreenState extends State<SpentsScreen> {
                               color: Colors.white,
                             ),
                           ),
-                          child: SpentCard(
+                          child: ReportCard(
+                            id: reports[index]['id'],
                             type: reports[index]["type"],
                             amount: reports[index]["amount"],
                             description: reports[index]["description"],
                             date: reports[index]["date"],
-                            getReports: null,
+                            getReports: getReports,
+                            isReport: false,
                           ),
                         );
                       },
@@ -108,6 +106,7 @@ class _SpentsScreenState extends State<SpentsScreen> {
               context,
               MaterialPageRoute(
                 builder: (context) => ReportForm(
+                  id: 0,
                   typeOfSpent: widget.type,
                 ),
               ),
