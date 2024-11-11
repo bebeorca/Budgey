@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:budgey/domain/report.dart';
 import 'package:sqflite/sqflite.dart' as sql;
 
@@ -69,7 +67,8 @@ class Database {
     );
   }
 
-  static Future<int> update(int id, String description, double amount, String type) async {
+  static Future<int> update(
+      int id, String description, double amount, String type) async {
     final db = await Database.db();
 
     final data = {
@@ -77,13 +76,8 @@ class Database {
       'amount': amount,
       'type': type,
     };
-    var result;
-    try {
-      result =
-          await db.update('Reports', data, where: "id = ?", whereArgs: [id]);
-    } catch (e) {
-      print("AOWK ERROR $e");
-    }
+    final result =
+        await db.update('Reports', data, where: "id = ?", whereArgs: [id]);
     return result;
   }
 }
