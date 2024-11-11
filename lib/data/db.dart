@@ -54,6 +54,7 @@ class Database {
       'Reports',
       where: 'type = ?',
       whereArgs: [type],
+      orderBy: "id DESC",
     );
   }
 }

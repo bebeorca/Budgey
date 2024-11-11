@@ -11,7 +11,7 @@ class ReportFormController {
   ) async {
     try {
       final now = DateTime.now();
-      final replacedAmount = amountController.text.replaceAll('.', '');
+      final replacedAmount = amountController.text.replaceAll(RegExp(r'[Rp.]'), '');
       final parsedAmount = double.parse(replacedAmount);
       final report = Report(
         description: descriptionController.text,

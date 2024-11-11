@@ -7,7 +7,10 @@ import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
 class SpentsScreen extends StatefulWidget {
-  const SpentsScreen({super.key, required this.type});
+  const SpentsScreen({
+    super.key,
+    required this.type,
+  });
 
   final String type;
 
@@ -17,6 +20,7 @@ class SpentsScreen extends StatefulWidget {
 
 class _SpentsScreenState extends State<SpentsScreen> {
   List<Map<String, dynamic>> reports = [];
+  String typeOfSpent = '';
 
   void getReports() async {
     final report = await Database.getSpents(widget.type);
@@ -67,6 +71,7 @@ class _SpentsScreenState extends State<SpentsScreen> {
                             await Database.delete(reports[index]["id"]);
                             setState(() {
                               getReports();
+                              typeOfSpent = reports[index]['type'];
                               // totalSpent();
                             });
                           },
@@ -102,7 +107,9 @@ class _SpentsScreenState extends State<SpentsScreen> {
             final dataUpdated = await Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const ReportForm(),
+                builder: (context) => ReportForm(
+                  typeOfSpent: widget.type,
+                ),
               ),
             );
 

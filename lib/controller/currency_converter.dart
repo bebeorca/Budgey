@@ -14,7 +14,7 @@ class CurrencyConverter extends TextInputFormatter {
     if (formattedHarga.isNotEmpty) {
       final formatter = NumberFormat.currency(
         locale: 'id',
-        symbol: '',
+        symbol: 'Rp',
         decimalDigits: 0,
       );
       formattedHarga = formatter.format(int.parse(formattedHarga));

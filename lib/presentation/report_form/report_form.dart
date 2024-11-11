@@ -5,7 +5,11 @@ import 'package:budgey/presentation/report_form/controller.dart';
 import 'package:flutter/material.dart';
 
 class ReportForm extends StatefulWidget {
-  const ReportForm({super.key});
+  const ReportForm({
+    super.key,
+    required this.typeOfSpent,
+  });
+  final String typeOfSpent;
 
   @override
   State<ReportForm> createState() => _ReportFormState();
@@ -18,7 +22,10 @@ class _ReportFormState extends State<ReportForm> {
 
   @override
   void initState() {
-    selectedType = ReportType.spendingTypes.first;
+    selectedType = widget.typeOfSpent != ''
+        ? ReportType.spendingTypes
+            .firstWhere((e) => e['text'] == widget.typeOfSpent)
+        : ReportType.spendingTypes.first;
     super.initState();
   }
 
@@ -32,7 +39,9 @@ class _ReportFormState extends State<ReportForm> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: const Text("Add new report"),
+          title: widget.typeOfSpent != ''
+              ? Text("Add new report, ${widget.typeOfSpent}")
+              : const Text("Add new report"),
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios),
             onPressed: () {
@@ -68,47 +77,73 @@ class _ReportFormState extends State<ReportForm> {
                       ),
                     ),
                     const SizedBox(height: 10),
-                    DropdownButtonHideUnderline(
-                      child: DropdownButton<Map<String, dynamic>>(
-                        value: selectedType,
-                        isExpanded: true,
-                        onChanged: (newValue) {
-                          setState(() {
-                            selectedType = newValue!;
-                          });
-                        },
-                        padding: const EdgeInsets.symmetric(vertical: 8),
-                        items: ReportType.spendingTypes.map((e) {
-                          return DropdownMenuItem<Map<String, dynamic>>(
-                            value: e,
-                            child: Row(
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.all(8),
-                                  decoration: BoxDecoration(
-                                    color: CardModel.getColor(
-                                      e['text'],
-                                    ),
-                                    borderRadius: BorderRadius.circular(100),
+                    widget.typeOfSpent == ''
+                        ? DropdownButtonHideUnderline(
+                            child: DropdownButton<Map<String, dynamic>>(
+                              value: selectedType,
+                              isExpanded: true,
+                              onChanged: (newValue) {
+                                setState(() {
+                                  selectedType = newValue!;
+                                });
+                              },
+                              padding: const EdgeInsets.symmetric(vertical: 8),
+                              items: ReportType.spendingTypes.map((e) {
+                                return DropdownMenuItem<Map<String, dynamic>>(
+                                  value: e,
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsets.all(8),
+                                        decoration: BoxDecoration(
+                                          color: CardModel.getColor(
+                                            e['text'],
+                                          ),
+                                          borderRadius:
+                                              BorderRadius.circular(100),
+                                        ),
+                                        child: Icon(
+                                          CardModel.getIconForType(
+                                            e['text'],
+                                          ),
+                                          size: 25,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        width: 8,
+                                      ),
+                                      Text(e['text']),
+                                    ],
                                   ),
-                                  child: Icon(
-                                    CardModel.getIconForType(
-                                      e['text'],
-                                    ),
-                                    size: 25,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                const SizedBox(
-                                  width: 8,
-                                ),
-                                Text(e['text']),
-                              ],
+                                );
+                              }).toList(),
                             ),
-                          );
-                        }).toList(),
-                      ),
-                    ),
+                          )
+                        : Row(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                  color: CardModel.getColor(
+                                    selectedType['text'],
+                                  ),
+                                  borderRadius: BorderRadius.circular(100),
+                                ),
+                                child: Icon(
+                                  CardModel.getIconForType(
+                                    selectedType['text'],
+                                  ),
+                                  size: 25,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 8,
+                              ),
+                              Text(selectedType['text']),
+                            ],
+                          ),
                     const SizedBox(height: 10),
                     TextFormField(
                       inputFormatters: [

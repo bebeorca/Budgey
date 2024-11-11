@@ -88,7 +88,9 @@ class _ReportsScreenState extends State<ReportsScreen> {
           final dataUpdated = await Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const ReportForm(),
+              builder: (context) => const ReportForm(
+                typeOfSpent: '',
+              ),
             ),
           );
 
