@@ -3,6 +3,7 @@ import 'package:budgey/presentation/components/Card/card_model.dart';
 import 'package:budgey/presentation/report_form/report_form.dart';
 import 'package:budgey/presentation/spents_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 // import 'package:intl/intl.dart';
 
 class ReportCard extends StatelessWidget {
@@ -23,9 +24,10 @@ class ReportCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final date = DateFormat("MMMM d, yyyy").format(
-    //   DateTime.parse(this.date),
-    // );
+    
+    final date = DateFormat("MMMM d, yyyy").format(
+      DateTime.parse(this.date),
+    );
 
     return Card(
       child: Padding(
@@ -65,6 +67,14 @@ class ReportCard extends StatelessWidget {
                     fontWeight: FontWeight.w500,
                   ),
                 ),
+                isReport
+                    ? const SizedBox.shrink()
+                    : Text(
+                        date,
+                        style: const TextStyle(
+                            fontSize: 13,
+                            color: Color.fromARGB(255, 156, 156, 156)),
+                      ),
               ],
             ),
             InkWell(

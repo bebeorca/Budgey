@@ -65,11 +65,58 @@ class _SpentsScreenState extends State<SpentsScreen> {
                         return Dismissible(
                           key: Key(reports[index].toString()),
                           direction: DismissDirection.endToStart,
-                          onDismissed: (direction) async {
-                            await Database.delete(reports[index]["id"]);
-                            setState(() {
-                              getReports();
-                            });
+                          confirmDismiss: (direction) async {
+                            final result = await showDialog<bool>(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: const Text("Are you sure?"),
+                                content: const Text(
+                                    "Do you really want to delete this record?"),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context, false);
+                                    },
+                                    child: Container(
+                                      padding: const EdgeInsets.all(8),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(6),
+                                        color: const Color.fromARGB(
+                                            255, 166, 174, 191),
+                                      ),
+                                      child: const Text(
+                                        'Cancel',
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                    ),
+                                  ),
+                                  TextButton(
+                                    onPressed: () async {
+                                      // Confirm deletion
+                                      Navigator.pop(context, true);
+                                      await Database.delete(
+                                          reports[index]['id']);
+                                      getReports(); // Refresh the list if necessary
+                                    },
+                                    child: Container(
+                                      padding: const EdgeInsets.all(8),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(6),
+                                        color: const Color.fromARGB(
+                                            255, 250, 64, 50),
+                                      ),
+                                      child: const Text(
+                                        'Delete',
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+
+                            // If deletion is confirmed, return true to allow the widget to be dismissed
+                            return result == true;
                           },
                           background: Container(
                             color: Colors.red,
